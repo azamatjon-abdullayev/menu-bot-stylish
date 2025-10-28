@@ -92,6 +92,21 @@
             font-weight: 600;
             margin-top: 4px;
         }
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 15px;
+            background: #d4f8d4;
+            color: #1b7b1b;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-weight: bold;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -122,19 +137,19 @@
     <div class="card">
         <label>🚗 Mashina turini tanlang</label>
         <div class="cars">
-            <div class="car-option" data-car="Sedan">
+            <div class="car-option" data-car="Jentra">
                 <img src="https://cdn-icons-png.flaticon.com/512/743/743922.png">
                 <div>Jentra</div>
             </div>
-            <div class="car-option" data-car="Minivan">
+            <div class="car-option" data-car="Cobalt">
                 <img src="https://cdn-icons-png.flaticon.com/512/743/743901.png">
                 <div>Cobalt</div>
             </div>
-            <div class="car-option" data-car="SUV">
+            <div class="car-option" data-car="Spark">
                 <img src="https://cdn-icons-png.flaticon.com/512/743/743921.png">
                 <div>Spark</div>
             </div>
-            <div class="car-option" data-car="Premium">
+            <div class="car-option" data-car="Nexia 3">
                 <img src="https://cdn-icons-png.flaticon.com/512/743/743907.png">
                 <div>Nexia 3</div>
             </div>
@@ -148,6 +163,7 @@
     </div>
 
     <button id="send">✅ Buyurtma berish</button>
+    <div id="success" class="success-message">✅ Buyurtma yuborildi!</div>
     <div class="footer">Made with ❤️ for Telegram Mini App</div>
 
     <script>
@@ -177,11 +193,22 @@
             };
 
             const btn = document.getElementById("send");
+            const successMsg = document.getElementById("success");
+            
             btn.textContent = "⏳ Yuborilmoqda...";
             btn.disabled = true;
 
             setTimeout(() => {
                 tg.sendData(JSON.stringify(data));
+
+                // ✅ Foydalanuvchiga tasdiq xabarini ko‘rsatamiz
+                btn.style.display = "none";
+                successMsg.style.display = "block";
+
+                // 2 soniyadan so‘ng oyna avtomatik yopiladi
+                setTimeout(() => {
+                    tg.close();
+                }, 2000);
             }, 800);
         });
     </script>
