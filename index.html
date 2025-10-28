@@ -1,114 +1,229 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Buyurtma</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    body {
-      background-color: #fff8e1;
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    h2 {
-      text-align: center;
-      color: #333;
-    }
-    .car {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin: 20px 0;
-    }
-    .car button {
-      padding: 20px;
-      border-radius: 15px;
-      border: none;
-      font-size: 16px;
-      background: #f5f5f5;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-      cursor: pointer;
-    }
-    .car button.active {
-      background: #ffe082;
-      border: 2px solid #fbc02d;
-    }
-    .submit {
-      background: #ffd600;
-      padding: 15px;
-      border: none;
-      border-radius: 10px;
-      font-size: 18px;
-      width: 100%;
-      cursor: pointer;
-    }
-    .success {
-      background: #c8e6c9;
-      text-align: center;
-      padding: 10px;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buyurtma berish</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(145deg, #fffbe6, #ffe777);
+            margin: 0;
+            padding: 20px;
+            color: #222;
+        }
+        h2 {
+            text-align: center;
+            color: #111;
+            margin-bottom: 10px;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+        }
+        .card:hover { transform: scale(1.01); }
+        label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+        }
+        select, input[type=range] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+            font-size: 16px;
+        }
+        .cars {
+            display: flex;
+            gap: 10px;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .car-option {
+            width: 45%;
+            background: #f5f5f5;
+            border-radius: 12px;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 2px solid transparent;
+        }
+        .car-option img {
+            width: 80px;
+            height: 50px;
+            object-fit: contain;
+        }
+        .car-option.active {
+            border-color: #FFD600;
+            background: #fff8cc;
+        }
+        #send {
+            width: 100%;
+            padding: 15px;
+            background: #FFD600;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        #send:hover { background: #ffce00; }
+        #send:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        .footer {
+            text-align: center;
+            font-size: 13px;
+            margin-top: 10px;
+            color: #555;
+        }
+        .slider-value {
+            text-align: right;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        .error {
+            color: #d32f2f;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <h2>🚘 Mashina turini tanlang</h2>
-  <div class="car">
-    <button data-car="Jentra">Jentra</button>
-    <button data-car="Cobalt">Cobalt</button>
-    <button data-car="Spark">Spark</button>
-    <button data-car="Nexia 3">Nexia 3</button>
-  </div>
+    <h2>🚖 Buyurtma berish</h2>
 
-  <label>👥 Odamlar soni:</label>
-  <input type="range" id="people" min="1" max="6" value="1" style="width:100%">
-  <p id="peopleCount">1</p>
+    <div class="card">
+        <label>📍 Qayerdan (Toshkent shaharlari)</label>
+        <select id="from">
+            <option value="Toshkent">Toshkent</option>
+            <option value="Chirchiq">Chirchiq</option>
+            <option value="Bekobod">Bekobod</option>
+            <option value="Angren">Angren</option>
+            <option value="Ohangaron">Ohangaron</option>
+        </select>
+    </div>
 
-  <button class="submit" id="submit">🚖 Buyurtma yuborish</button>
-  <p class="success" id="success" style="display:none;">✅ Buyurtma yuborildi!</p>
+    <div class="card">
+        <label>🎯 Qayerga (Farg'ona shaharlari)</label>
+        <select id="to">
+            <option value="Farg'ona">Farg'ona</option>
+            <option value="Marg'ilon">Marg'ilon</option>
+            <option value="Qo'qon">Qo'qon</option>
+            <option value="Oltiariq">Oltiariq</option>
+            <option value="Furqat">Furqat</option>
+        </select>
+    </div>
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
+    <div class="card">
+        <label>🚗 Mashina turini tanlang</label>
+        <div class="error" id="carError">Iltimos, mashina turini tanlang!</div>
+        <div class="cars">
+            <div class="car-option" data-car="Jentra">
+                <img src="https://cdn-icons-png.flaticon.com/512/743/743922.png" alt="Jentra">
+                <div>Jentra</div>
+            </div>
+            <div class="car-option" data-car="Cobalt">
+                <img src="https://cdn-icons-png.flaticon.com/512/743/743901.png" alt="Cobalt">
+                <div>Cobalt</div>
+            </div>
+            <div class="car-option" data-car="Spark">
+                <img src="https://cdn-icons-png.flaticon.com/512/743/743921.png" alt="Spark">
+                <div>Spark</div>
+            </div>
+            <div class="car-option" data-car="Nexia 3">
+                <img src="https://cdn-icons-png.flaticon.com/512/743/743907.png" alt="Nexia 3">
+                <div>Nexia 3</div>
+            </div>
+        </div>
+    </div>
 
-    let selectedCar = null;
+    <div class="card">
+        <label>👥 Odamlar soni</label>
+        <input type="range" id="people" min="1" max="5" value="1" step="1" oninput="updatePeopleValue(this.value)">
+        <div class="slider-value" id="peopleValue">1 kishi</div>
+    </div>
 
-    const buttons = document.querySelectorAll(".car button");
-    const submitBtn = document.getElementById("submit");
-    const successMsg = document.getElementById("success");
-    const peopleRange = document.getElementById("people");
-    const peopleCount = document.getElementById("peopleCount");
+    <button id="send">✅ Buyurtma berish</button>
+    <div class="error" id="generalError"></div>
+    <div class="footer">Made with ❤️ for Telegram Mini App</div>
 
-    buttons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        buttons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        selectedCar = btn.dataset.car;
-      });
-    });
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.enableClosingConfirmation();
 
-    peopleRange.addEventListener("input", () => {
-      peopleCount.textContent = peopleRange.value;
-    });
+        let selectedCar = null;
+        const carOptions = document.querySelectorAll('.car-option');
+        const carError = document.getElementById('carError');
+        const generalError = document.getElementById('generalError');
+        const sendBtn = document.getElementById('send');
 
-    submitBtn.addEventListener("click", () => {
-      if (!selectedCar) {
-        alert("Mashina turini tanlang!");
-        return;
-      }
+        carOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                carOptions.forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                selectedCar = opt.dataset.car;
+                carError.style.display = 'none';
+            });
+        });
 
-      const data = {
-        from: "Toshkent",
-        to: "Farg‘ona",
-        car: selectedCar,
-        people: peopleRange.value
-      };
+        function updatePeopleValue(val) {
+            document.getElementById('peopleValue').textContent = val + ' kishi';
+        }
 
-      tg.sendData(JSON.stringify(data)); // Ma’lumotni botga jo‘natish
+        sendBtn.addEventListener("click", () => {
+            // Validatsiya
+            if (!selectedCar) {
+                carError.style.display = 'block';
+                return;
+            }
 
-      successMsg.style.display = "block";
-    });
-  </script>
+            const btn = sendBtn;
+            const originalText = btn.textContent;
+            
+            btn.textContent = "⏳ Yuborilmoqda...";
+            btn.disabled = true;
+            generalError.style.display = 'none';
+
+            const data = {
+                from: document.getElementById("from").value,
+                to: document.getElementById("to").value,
+                car: selectedCar,
+                people: document.getElementById("people").value
+            };
+
+            try {
+                tg.sendData(JSON.stringify(data));
+                
+                // Muvaffaqiyatli yuborilganda
+                btn.textContent = "✅ Buyurtma yuborildi!";
+                
+                // 2 soniyadan so'ng bot yopiladi
+                setTimeout(() => {
+                    tg.close();
+                }, 2000);
+                
+            } catch (error) {
+                generalError.textContent = "Xatolik yuz berdi: " + error.message;
+                generalError.style.display = 'block';
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        // Telegram WebApp ready
+        tg.ready();
+    </script>
 </body>
 </html>
