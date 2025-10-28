@@ -6,467 +6,179 @@
     <title>Buyurtma berish</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
             padding: 20px;
-            color: #333;
+            background: #f5f5f5;
         }
-        
         .container {
-            max-width: 400px;
-            margin: 0 auto;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        
-        .header {
-            background: linear-gradient(135deg, #FFD600, #FF6B00);
-            padding: 25px 20px;
-            text-align: center;
-            color: white;
-        }
-        
-        .header h1 {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .header p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-        
-        .content {
-            padding: 25px 20px;
-        }
-        
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
-        
-        .form-group label {
+        label {
             display: block;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #555;
-            font-size: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
         }
-        
-        select, input[type="range"] {
+        select, input {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 12px;
-            font-size: 16px;
-            background: #f8f9fa;
-            transition: all 0.3s ease;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
-        
-        select:focus, input[type="range"]:focus {
-            outline: none;
-            border-color: #FFD600;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(255, 214, 0, 0.1);
-        }
-        
-        .cars-grid {
+        .cars {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 10px;
+            gap: 10px;
+            margin: 10px 0;
         }
-        
         .car-option {
-            background: #f8f9fa;
-            border: 2px solid #e1e5e9;
-            border-radius: 12px;
-            padding: 15px 10px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
-        
-        .car-option:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
         .car-option.active {
-            border-color: #FFD600;
-            background: linear-gradient(135deg, #FFF9C4, #FFEB3B);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(255, 214, 0, 0.3);
+            border-color: #007bff;
+            background: #e7f3ff;
         }
-        
-        .car-icon {
-            width: 50px;
-            height: 40px;
-            margin: 0 auto 8px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-        }
-        
-        .car-name {
-            font-weight: 600;
-            font-size: 14px;
-            color: #333;
-        }
-        
-        .slider-container {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 10px;
-        }
-        
-        .slider-value {
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            color: #FF6B00;
-            margin-top: 10px;
-        }
-        
-        .people-icon {
-            display: inline-block;
-            margin-right: 5px;
-        }
-        
         .submit-btn {
             width: 100%;
-            background: linear-gradient(135deg, #FFD600, #FF6B00);
+            padding: 15px;
+            background: #007bff;
             color: white;
             border: none;
-            padding: 18px;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: bold;
+            border-radius: 8px;
+            font-size: 16px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
+            margin-top: 20px;
         }
-        
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 107, 0, 0.3);
-        }
-        
-        .submit-btn:active {
-            transform: translateY(0);
-        }
-        
         .submit-btn:disabled {
             background: #ccc;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .error-message {
-            color: #e74c3c;
-            text-align: center;
-            margin-top: 10px;
-            font-size: 14px;
-            display: none;
-            background: #ffeaea;
-            padding: 10px;
-            border-radius: 8px;
-            border-left: 4px solid #e74c3c;
-        }
-        
-        .success-message {
-            color: #27ae60;
-            text-align: center;
-            margin-top: 10px;
-            font-size: 14px;
-            display: none;
-            background: #e8f6ef;
-            padding: 10px;
-            border-radius: 8px;
-            border-left: 4px solid #27ae60;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #e1e5e9;
-            color: #777;
-            font-size: 12px;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #ffffff;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .required::after {
-            content: " *";
-            color: #e74c3c;
-        }
-        
-        /* Range slider styling */
-        input[type="range"] {
-            -webkit-appearance: none;
-            height: 8px;
-            background: #e1e5e9;
-            border-radius: 4px;
-            border: none;
-        }
-        
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 24px;
-            height: 24px;
-            background: #FF6B00;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-        }
-        
-        input[type="range"]::-moz-range-thumb {
-            width: 24px;
-            height: 24px;
-            background: #FF6B00;
-            border-radius: 50%;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🚖 Taxi Buyurtma</h1>
-            <p>Tez va ishonchli taxi xizmati</p>
-        </div>
+        <h2>🚖 Taxi Buyurtma</h2>
         
-        <div class="content">
-            <!-- Qayerdan -->
-            <div class="form-group">
-                <label class="required">📍 Qayerdan</label>
-                <select id="from">
-                    <option value="Toshkent">Toshkent</option>
-                    <option value="Chirchiq">Chirchiq</option>
-                    <option value="Bekobod">Bekobod</option>
-                    <option value="Angren">Angren</option>
-                    <option value="Ohangaron">Ohangaron</option>
-                    <option value="Yangiyo'l">Yangiyo'l</option>
-                    <option value="Olmaliq">Olmaliq</option>
-                </select>
-            </div>
-            
-            <!-- Qayerga -->
-            <div class="form-group">
-                <label class="required">🎯 Qayerga</label>
-                <select id="to">
-                    <option value="Farg'ona">Farg'ona</option>
-                    <option value="Marg'ilon">Marg'ilon</option>
-                    <option value="Qo'qon">Qo'qon</option>
-                    <option value="Oltiariq">Oltiariq</option>
-                    <option value="Furqat">Furqat</option>
-                    <option value="Quvasoy">Quvasoy</option>
-                    <option value="Rishton">Rishton</option>
-                </select>
-            </div>
-            
-            <!-- Mashina turi -->
-            <div class="form-group">
-                <label class="required">🚗 Mashina turi</label>
-                <div class="cars-grid">
-                    <div class="car-option" data-car="Jentra">
-                        <div class="car-icon">🚗</div>
-                        <div class="car-name">Jentra</div>
-                    </div>
-                    <div class="car-option" data-car="Cobalt">
-                        <div class="car-icon">🚙</div>
-                        <div class="car-name">Cobalt</div>
-                    </div>
-                    <div class="car-option" data-car="Spark">
-                        <div class="car-icon">🚘</div>
-                        <div class="car-name">Spark</div>
-                    </div>
-                    <div class="car-option" data-car="Nexia 3">
-                        <div class="car-icon">🏎️</div>
-                        <div class="car-name">Nexia 3</div>
-                    </div>
-                </div>
-                <div class="error-message" id="carError">Iltimos, mashina turini tanlang!</div>
-            </div>
-            
-            <!-- Odamlar soni -->
-            <div class="form-group">
-                <label class="required">👥 Odamlar soni</label>
-                <div class="slider-container">
-                    <input type="range" id="people" min="1" max="6" value="1" step="1">
-                    <div class="slider-value">
-                        <span class="people-icon">👥</span>
-                        <span id="peopleValue">1 kishi</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Submit button -->
-            <button class="submit-btn" id="submitBtn">
-                ✅ Buyurtma berish
-            </button>
-            
-            <!-- Xabarlar -->
-            <div class="error-message" id="generalError"></div>
-            <div class="success-message" id="successMessage">
-                ✅ Buyurtma muvaffaqiyatli yuborildi! Bot yopilmoqda...
-            </div>
-            
-            <div class="footer">
-                <p>© 2024 Taxi Service. Barcha huquqlar himoyalangan.</p>
-                <p>Made with ❤️ for Telegram Mini App</p>
+        <div class="form-group">
+            <label>📍 Qayerdan</label>
+            <select id="from">
+                <option value="Toshkent">Toshkent</option>
+                <option value="Chirchiq">Chirchiq</option>
+                <option value="Bekobod">Bekobod</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>🎯 Qayerga</label>
+            <select id="to">
+                <option value="Fargona">Fargona</option>
+                <option value="Margilon">Margilon</option>
+                <option value="Qoqon">Qoqon</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>🚗 Mashina turi</label>
+            <div class="cars">
+                <div class="car-option" data-car="Jentra">Jentra</div>
+                <div class="car-option" data-car="Cobalt">Cobalt</div>
+                <div class="car-option" data-car="Spark">Spark</div>
+                <div class="car-option" data-car="Nexia 3">Nexia 3</div>
             </div>
         </div>
+
+        <div class="form-group">
+            <label>👥 Odamlar soni</label>
+            <input type="range" id="people" min="1" max="6" value="1">
+            <div id="peopleValue">1 kishi</div>
+        </div>
+
+        <button class="submit-btn" id="submitBtn">✅ Buyurtma berish</button>
     </div>
 
     <script>
         // Telegram WebApp initialization
         const tg = window.Telegram.WebApp;
-        
-        // WebApp ni kengaytirish va sozlamalar
         tg.expand();
-        tg.enableClosingConfirmation();
-        tg.setHeaderColor('#FFD600');
-        tg.setBackgroundColor('#667eea');
-        
-        // O'zgaruvchilar
+        tg.ready();
+
+        console.log("Telegram WebApp initialized");
+
         let selectedCar = null;
         const carOptions = document.querySelectorAll('.car-option');
-        const carError = document.getElementById('carError');
-        const generalError = document.getElementById('generalError');
-        const successMessage = document.getElementById('successMessage');
         const submitBtn = document.getElementById('submitBtn');
         const peopleSlider = document.getElementById('people');
         const peopleValue = document.getElementById('peopleValue');
-        
+
         // Mashina tanlash
         carOptions.forEach(option => {
             option.addEventListener('click', function() {
-                // Barcha aktiv klasslarni olib tashlash
                 carOptions.forEach(opt => opt.classList.remove('active'));
-                
-                // Tanlangan mashinaga aktiv klass qo'shish
                 this.classList.add('active');
                 selectedCar = this.dataset.car;
-                
-                // Xatolik xabarini yashirish
-                carError.style.display = 'none';
-                generalError.style.display = 'none';
-                
                 console.log('Tanlangan mashina:', selectedCar);
             });
         });
-        
-        // Odamlar soni slider
+
+        // Odamlar soni
         peopleSlider.addEventListener('input', function() {
-            const value = this.value;
-            peopleValue.textContent = value + ' kishi';
+            peopleValue.textContent = this.value + ' kishi';
         });
-        
+
         // Submit tugmasi
         submitBtn.addEventListener('click', function() {
-            // Validatsiya
+            console.log("Submit tugmasi bosildi");
+
             if (!selectedCar) {
-                carError.style.display = 'block';
-                carError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                alert("Iltimos, mashina turini tanlang!");
                 return;
             }
-            
-            // Tugmani loading holatiga o'tkazish
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="loading"></span>Yuborilmoqda...';
-            submitBtn.disabled = true;
-            
-            // Xatolik xabarlarini yashirish
-            carError.style.display = 'none';
-            generalError.style.display = 'none';
-            successMessage.style.display = 'none';
-            
+
             // Ma'lumotlarni tayyorlash
             const formData = {
                 from: document.getElementById('from').value,
                 to: document.getElementById('to').value,
                 car: selectedCar,
-                people: peopleSlider.value || "1",
-                timestamp: new Date().toISOString(),
-                platform: 'telegram_web_app'
+                people: peopleSlider.value,
+                timestamp: new Date().toISOString()
             };
-            
-            console.log('Yuborilayotgan ma\'lumotlar:', formData);
-            
-            // Ma'lumotlarni botga yuborish
+
+            console.log("Yuborilayotgan ma'lumotlar:", formData);
+
+            // Botga ma'lumotlarni yuborish
             try {
                 tg.sendData(JSON.stringify(formData));
+                console.log("Ma'lumotlar yuborildi");
                 
-                // Muvaffaqiyat xabarini ko'rsatish
-                successMessage.style.display = 'block';
-                submitBtn.innerHTML = '✅ Yuborildi!';
+                // Tugmani o'chirish
+                submitBtn.disabled = true;
+                submitBtn.textContent = "✅ Yuborildi!";
                 
-                // 2 soniyadan so'ng WebApp ni yopish
+                // 2 soniyadan so'ng yopish
                 setTimeout(() => {
                     tg.close();
                 }, 2000);
                 
             } catch (error) {
-                // Xatolik yuz berganda
-                console.error('Xatolik:', error);
-                generalError.textContent = 'Xatolik yuz berdi: ' + error.message;
-                generalError.style.display = 'block';
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                
-                // Xatolik xabariga scroll qilish
-                generalError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                console.error("Xatolik:", error);
+                alert("Xatolik yuz berdi: " + error.message);
             }
         });
-        
-        // WebApp tayyor bo'lganda
-        tg.ready();
-        
-        console.log('Telegram WebApp initialized successfully');
-        console.log('Platform:', tg.platform);
-        console.log('Color scheme:', tg.colorScheme);
-        console.log('Init data:', tg.initData);
-        
-        // Debug ma'lumotlari
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('car-option')) {
-                console.log('Mashina tanlandi:', e.target.dataset.car);
-            }
-        });
+
+        // Debug: WebApp holatini tekshirish
+        console.log("WebApp platform:", tg.platform);
+        console.log("WebApp version:", tg.version);
+        console.log("InitData:", tg.initData);
     </script>
 </body>
 </html>
