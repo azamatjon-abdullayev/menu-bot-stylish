@@ -102,23 +102,18 @@
       });
     });
 
-    function updatePeopleValue(val) {
-      document.getElementById("peopleValue").textContent = val;
-    }
+document.getElementById("send").addEventListener("click", () => {
+  const data = {
+    from: document.getElementById("from").value,
+    to: document.getElementById("to").value,
+    car: selectedCar || "Tanlanmagan",
+    people: document.getElementById("people").value
+  };
 
-    document.getElementById("send").addEventListener("click", () => {
-      const data = {
-        from: document.getElementById("from").value,
-        to: document.getElementById("to").value,
-        car: selectedCar || "Tanlanmagan",
-        people: document.getElementById("people").value
-      };
-      tg.sendData(JSON.stringify(data));
+  console.log("Yuborilayotgan ma'lumot:", data); // ✅ Shu chiqsa, JavaScript ishlayapti
+  tg.sendData(JSON.stringify(data));
+});
 
-      document.getElementById("send").style.display = "none";
-      document.getElementById("success").style.display = "block";
-      setTimeout(() => tg.close(), 1500);
-    });
   </script>
 </body>
 </html>
